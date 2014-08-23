@@ -31,46 +31,46 @@ import org.jibx.runtime.IMarshallingContext;
 
 /**
  * @author Administrator
- * @date 2014年3月1日
  * @version 1.0
+ * @date 2014年3月1日
  */
 public abstract class AbstractHttpXmlEncoder<T> extends
-	MessageToMessageEncoder<T> {
+        MessageToMessageEncoder<T> {
     IBindingFactory factory = null;
     StringWriter writer = null;
     final static String CHARSET_NAME = "UTF-8";
     final static Charset UTF_8 = Charset.forName(CHARSET_NAME);
 
     protected ByteBuf encode0(ChannelHandlerContext ctx, Object body)
-	    throws Exception {
-	factory = BindingDirectory.getFactory(body.getClass());
-	writer = new StringWriter();
-	IMarshallingContext mctx = factory.createMarshallingContext();
-	mctx.setIndent(2);
-	mctx.marshalDocument(body, CHARSET_NAME, null, writer);
-	String xmlStr = writer.toString();
-	writer.close();
-	writer = null;
-	ByteBuf encodeBuf = Unpooled.copiedBuffer(xmlStr, UTF_8);
-	return encodeBuf;
+            throws Exception {
+        factory = BindingDirectory.getFactory(body.getClass());
+        writer = new StringWriter();
+        IMarshallingContext mctx = factory.createMarshallingContext();
+        mctx.setIndent(2);
+        mctx.marshalDocument(body, CHARSET_NAME, null, writer);
+        String xmlStr = writer.toString();
+        writer.close();
+        writer = null;
+        ByteBuf encodeBuf = Unpooled.copiedBuffer(xmlStr, UTF_8);
+        return encodeBuf;
     }
 
     /**
      * Calls {@link ChannelHandlerContext#fireExceptionCaught(Throwable)} to
      * forward to the next {@link ChannelHandler} in the {@link ChannelPipeline}
      * .
-     * 
+     * <p/>
      * Sub-classes may override this method to change behavior.
      */
     @Skip
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
-	    throws Exception {
-	// 释放资源
-	if (writer != null) {
-	    writer.close();
-	    writer = null;
-	}
+            throws Exception {
+        // 释放资源
+        if (writer != null) {
+            writer.close();
+            writer = null;
+        }
     }
 
 }
